@@ -3,6 +3,8 @@ package com.github.niefy.modules.wx.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.niefy.adapter.WxConfig;
+import com.github.niefy.constant.WxAccountTypeEnums;
 import lombok.Data;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 
@@ -60,6 +62,38 @@ public class WxAccount implements Serializable {
 		configStorage.setToken(token);
 		configStorage.setAesKey(aesKey);
 		return configStorage;
+	}
+
+	public com.github.niefy.adapter.impl.WxMaDefaultConfigImpl toWxMaConfigStorageAdapter(){
+		com.github.niefy.adapter.impl.WxMaDefaultConfigImpl configStorage = new com.github.niefy.adapter.impl.WxMaDefaultConfigImpl();
+		configStorage.setAppid(appid);
+		configStorage.setSecret(secret);
+		configStorage.setToken(token);
+		configStorage.setAesKey(aesKey);
+		configStorage.setAccountType(type);
+		return configStorage;
+	}
+
+	public com.github.niefy.adapter.impl.WxMpDefaultConfigImpl toWxMpConfigStorageAdapter(){
+		com.github.niefy.adapter.impl.WxMpDefaultConfigImpl configStorage = new com.github.niefy.adapter.impl.WxMpDefaultConfigImpl();
+		configStorage.setAppId(appid);
+		configStorage.setSecret(secret);
+		configStorage.setToken(token);
+		configStorage.setAesKey(aesKey);
+		configStorage.setAccountType(type);
+		return configStorage;
+	}
+
+	public WxConfig toWxConfig() {
+		WxAccountTypeEnums wxAccountType = WxAccountTypeEnums.getWxAccountType(this.type);
+		switch (wxAccountType) {
+			case SUBSCRIPTION_ACCOUNT:
+			case SERVICE_ACCOUNT:
+				return toWxMpConfigStorageAdapter();
+			case MINI_PROGRAM:
+				return toWxMaConfigStorageAdapter();
+		}
+		return null;
 	}
 
 }

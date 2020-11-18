@@ -3,9 +3,9 @@ package com.github.niefy.modules.wx.entity;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.github.niefy.common.utils.Json;
 import lombok.Data;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
@@ -49,8 +49,8 @@ public class WxUser implements Serializable {
         this.openid = openid;
     }
 
-    public WxUser(WxMpUser wxMpUser,String appid) {
-        this.openid = wxMpUser.getOpenId();
+    public WxUser(WxMpUser wxMpUser, String appid,String openid) {
+        this.openid = openid;
         this.appid = appid;
 		this.subscribe=wxMpUser.getSubscribe();
 		if(wxMpUser.getSubscribe()){

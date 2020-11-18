@@ -20,9 +20,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Nifury
@@ -72,7 +72,7 @@ public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> impleme
 				logger.error("获取不到用户信息，无法更新,openid:{}",openid);
 				return null;
 			}
-			WxUser user = new WxUser(userWxInfo,appid);
+			WxUser user = new WxUser(userWxInfo,appid,openid);
 			this.saveOrUpdate(user);
 			return user;
 		} catch (Exception e) {
@@ -172,7 +172,12 @@ public class WxUserServiceImpl extends ServiceImpl<WxUserMapper, WxUser> impleme
 					logger.error("同步出错，批次：【{}--{}-{}】，错误信息：{}",batch, finalStart, finalEnd,e);
 				}
 				if(wxMpUsers!=null && !wxMpUsers.isEmpty()){
-					List<WxUser> wxUsers=wxMpUsers.parallelStream().map(item->new WxUser(item,appid)).collect(Collectors.toList());
+					List<WxUser> wxUsers = new ArrayList<>();
+					for(int i=0;i<subOpenids.size();i++) {
+						String openid = subOpenids.get(i);
+						WxMpUser wxMpUser = wxMpUsers.get(i);
+						wxUsers.add(new WxUser(wxMpUser,appid,openid));
+					}
 					this.saveOrUpdateBatch(wxUsers);
 				}
 			});

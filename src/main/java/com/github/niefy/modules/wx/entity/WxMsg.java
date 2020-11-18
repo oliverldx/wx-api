@@ -1,5 +1,7 @@
 package com.github.niefy.modules.wx.entity;
 
+import cn.binarywang.wx.miniapp.bean.WxMaMessage;
+import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -90,6 +92,28 @@ public class WxMsg implements Serializable {
 			this.detail.put("eventKey",wxMessage.getEventKey());
 		}
 	}
+
+	public WxMsg(WxMaMessage wxMessage) {
+		this.openid=wxMessage.getFromUser();
+		this.appid= WxMpConfigStorageHolder.get();
+		this.inOut = WxMsgInOut.IN;
+		this.msgType = wxMessage.getMsgType();
+		this.detail = new JSONObject();
+		Integer createTime = wxMessage.getCreateTime();
+		this.createTime = createTime==null?new Date():new Date(createTime*1000);
+		if(WxMaConstants.KefuMsgType.TEXT.equals(this.msgType)){
+			this.detail.put("content",wxMessage.getContent());
+		}else if(WxMaConstants.KefuMsgType.IMAGE.equals(this.msgType)){
+			this.detail.put("picUrl",wxMessage.getPicUrl());
+			this.detail.put("mediaId",wxMessage.getMediaId());
+		}else if(WxMaConstants.KefuMsgType.MA_PAGE.equals(this.msgType)){
+			this.detail.put("thumbMediaId",wxMessage.getThumbMediaId());
+			this.detail.put("title",wxMessage.getTitle());
+			this.detail.put("pagePath",wxMessage.getPagePath());
+		}
+	}
+
+
 	public static WxMsg buildOutMsg(String msgType,String openid,JSONObject detail){
 		WxMsg wxMsg = new WxMsg();
 		wxMsg.appid= WxMpConfigStorageHolder.get();
