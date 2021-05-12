@@ -31,7 +31,7 @@
 		<fastjson.version>1.2.70</fastjson.version>
 		<lombok.version>1.18.10</lombok.version>
 		<weixin-java.version>3.9.9.B</weixin-java.version>
-		<docker.host>http://192.168.1.249:2375</docker.host>
+		<docker.host>http://192.168.1.8:2375</docker.host>
 		<docker.maven.plugin.version>1.2.2</docker.maven.plugin.version>
 	</properties>
 
